@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cryptography &amp; Security — SIGNAL / CIPHER</title>
+</head>
+<body>
+
+  <header>
+    <p><strong>SIGNAL / CIPHER</strong></p>
+    <p>An educational inquiry into how continuous physical voltages become discrete digital states, and how mathematical cryptography protects the systems that compute them.</p>
+    <nav aria-label="Main Navigation">
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="hardware.html">Hardware Foundations</a></li>
+        <li><a href="cryptography.html">Cryptography &amp; Security</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Principles of Cryptography and Information Security</h1>
+
+    <nav aria-label="Page Table of Contents">
+      <h2>Table of Contents</h2>
+      <ul>
+        <li><a href="#information-protection">Fundamentals of Protecting Digital Information</a></li>
+        <li><a href="#plaintext-ciphertext">Plaintext, Ciphertext, and Cryptographic Transforms</a></li>
+        <li><a href="#cryptographic-keys">The Essential Role of Cryptographic Keys</a></li>
+        <li><a href="#symmetric-asymmetric">Symmetric versus Asymmetric Encryption</a></li>
+        <li><a href="#security-primitives">Core Security Objectives: Confidentiality, Integrity, and Authentication</a></li>
+        <li><a href="#cryptographic-boundaries">Realistic Boundaries: What Cryptography Cannot Solve</a></li>
+        <li><a href="#authoritative-standards">Authoritative Cryptographic Standards</a></li>
+      </ul>
+    </nav>
+
+    <section id="information-protection">
+      <h2>Fundamentals of Protecting Digital Information</h2>
+      <p>When electronic hardware manipulates bits, those values must eventually traverse communication channels—such as local buses, local area networks, undersea fiber-optic cables, or wireless radio frequencies. By default, raw digital signals moving across transmission media carry no inherent protection against passive eavesdropping, unauthorized interception, or active tampering.</p>
+
+      <p>Cryptography is the mathematical and algorithmic science of protecting digital information in the presence of adversaries. Rather than attempting to physically conceal the communication medium, cryptography assumes that an adversary may have complete access to the physical transmission channel. Cryptographic algorithms mathematically transform sensitive digital information so that only authorized parties holding legitimate credentials can interpret or modify it.</p>
+    </section>
+
+    <section id="plaintext-ciphertext">
+      <h2>Plaintext, Ciphertext, and Cryptographic Transforms</h2>
+      <p>Every cryptographic transformation operates on two fundamental forms of data:</p>
+
+      <ul>
+        <li><strong>Plaintext:</strong> The original, intelligible message or data payload in its native format. Plaintext may be human-readable text, structured database records, executable software binaries, or sensor telemetry.</li>
+        <li><strong>Ciphertext:</strong> The scrambled, unreadable representation produced when an encryption algorithm processes plaintext. To an unauthorized observer lacking the proper cryptographic key, high-quality ciphertext appears statistically indistinguishable from uniform random noise.</li>
+      </ul>
+
+      <p>The transformation from plaintext to ciphertext is known as <strong>encryption</strong>, represented formally as an encryption function $E$ taking a key $K$ and plaintext $P$ to produce ciphertext $C$ ($C = E_K(P)$). The reverse transformation is <strong>decryption</strong>, where a decryption function $D$ applies a matching key to recover the original plaintext ($P = D_K(C)$).</p>
+
+      <article id="kerckhoffs-principle">
+        <h3>Kerckhoffs's Principle and Open Design</h3>
+        <p>A cornerstone of modern engineering is Kerckhoffs's Principle, articulated by Auguste Kerckhoffs in the nineteenth century: <em>A cryptographic system should remain secure, even if everything about the system, except the key, is public knowledge.</em></p>
+        <p>In contemporary cybersecurity, attempting to hide an algorithm's design (often termed "security through obscurity") is considered an unreliable engineering practice. Modern ciphers are published openly, subjected to years of adversarial mathematical analysis, and standardized only after withstanding exhaustive cryptanalytic scrutiny. Security must depend solely on keeping the cryptographic key secret.</p>
+      </article>
+    </section>
+
+    <section id="cryptographic-keys">
+      <h2>The Essential Role of Cryptographic Keys</h2>
+      <p>A cryptographic key is a specific sequence of binary bits supplied as an input parameter to cryptographic algorithms. The key dictates the precise mathematical permutations, substitutions, and transformations applied to the data.</p>
+
+      <p>The strength of any cryptographic system is bounded by two primary characteristics of its keys:</p>
+
+      <article id="key-characteristics">
+        <h3>Key Length and Keyspace</h3>
+        <p>The total number of possible keys in a cryptosystem is termed the <em>keyspace</em>. For an $n$-bit binary key, the keyspace consists of $2^n$ unique possibilities:</p>
+        <ul>
+          <li>A 56-bit key (such as the legacy Data Encryption Standard) offers $2^{56} \approx 7.2 \times 10^{16}$ possible combinations, which modern distributed computers can exhaustively test in hours.</li>
+          <li>A 128-bit key (standard in the Advanced Encryption Standard, AES-128) provides $2^{128} \approx 3.4 \times 10^{38}$ possibilities—a number so vast that testing every combination would require more energy than is consumed by civilization over centuries.</li>
+          <li>A 256-bit key (AES-256) provides $2^{256} \approx 1.15 \times 10^{77}$ combinations, offering security margins designed to resist even theoretical quantum computing speedups (such as Grover's algorithm).</li>
+        </ul>
+      </article>
+
+      <article id="entropy-generation">
+        <h3>Randomness and Entropy</h3>
+        <p>A long key is only secure if it cannot be guessed. Keys must be generated using Cryptographically Secure Pseudorandom Number Generators (CSPRNGs) that harvest high-entropy physical noise—such as thermal fluctuations in semiconductor diodes, radioactive decay events, or precise jitter between independent crystal oscillators on a circuit board.</p>
+      </article>
+    </section>
+
+    <section id="symmetric-asymmetric">
+      <h2>Symmetric versus Asymmetric Encryption</h2>
+      <p>Modern cryptosystems are broadly divided into two architectural paradigms, each addressing distinct operational requirements:</p>
+
+      <article id="symmetric-ciphers">
+        <h3>1. Symmetric-Key Cryptography</h3>
+        <p>In symmetric encryption, the communicating parties share a single identical key for both encrypting and decrypting data.</p>
+        <ul>
+          <li><strong>Primary Examples:</strong> Advanced Encryption Standard (AES) with 128-bit or 256-bit keys, and ChaCha20 stream ciphers.</li>
+          <li><strong>Key Advantages:</strong> High computational throughput, minimal power consumption, and efficient execution in hardware through dedicated CPU instructions (such as AES-NI).</li>
+          <li><strong>Engineering Challenge:</strong> The key distribution problem. Before two distant systems can communicate securely over an untrusted network, they must first securely exchange the secret key without an adversary intercepting it.</li>
+        </ul>
+      </article>
+
+      <article id="asymmetric-ciphers">
+        <h3>2. Asymmetric-Key (Public-Key) Cryptography</h3>
+        <p>In asymmetric cryptography, each entity possesses a mathematically linked key pair: a <em>public key</em>, which can be freely distributed to anyone, and a <em>private key</em>, which must remain strictly secret with the owner.</p>
+        <ul>
+          <li><strong>Primary Examples:</strong> RSA (Rivest-Shamir-Adleman), Diffie-Hellman Key Exchange, and Elliptic Curve Cryptography (such as ECDSA and Ed25519).</li>
+          <li><strong>Key Advantages:</strong> Solves the key distribution problem. Anyone can use a recipient's public key to encrypt a message, but only the recipient's private key can invert the mathematical operation to decrypt it.</li>
+          <li><strong>Engineering Challenge:</strong> High computational complexity. Asymmetric algorithms involve operations on very large integers or points on elliptic curves, making them orders of magnitude slower than symmetric ciphers.</li>
+        </ul>
+      </article>
+
+      <article id="hybrid-cryptosystems">
+        <h3>Hybrid Cryptography: Combining Both Worlds</h3>
+        <p>Real-world security protocols, including Transport Layer Security (TLS/HTTPS) and Secure Shell (SSH), resolve this trade-off using a hybrid model. Asymmetric cryptography is used during an initial connection handshake to authenticate identities and negotiate a temporary, shared "session key." Once established, high-speed symmetric ciphers encrypt the actual bulk payload data, achieving both secure key exchange and high computational performance.</p>
+      </article>
+    </section>
+
+    <section id="security-primitives">
+      <h2>Core Security Objectives: Confidentiality, Integrity, and Authentication</h2>
+      <p>Securing digital communications encompasses more than merely preventing unauthorized reading. Robust cybersecurity addresses four interrelated objectives:</p>
+
+      <article id="confidentiality">
+        <h3>Confidentiality</h3>
+        <p>Confidentiality guarantees that information is accessible only to authorized entities. Ciphers like AES and ChaCha20 provide confidentiality by ensuring that unauthorized parties observing transmission channels cannot read the message contents.</p>
+      </article>
+
+      <article id="integrity">
+        <h3>Integrity</h3>
+        <p>Integrity guarantees that information has not been altered, substituted, or corrupted in transit by an adversary or by physical transmission noise. Cryptographic hash functions—such as SHA-256 and SHA-3—produce fixed-length digital fingerprints of arbitrary data. If even a single physical bit changes in a multi-gigabyte file, the resulting hash changes completely and unpredictably (known as the avalanche effect).</p>
+      </article>
+
+      <article id="authentication">
+        <h3>Authentication and Non-Repudiation</h3>
+        <p>Authentication verifies the true identity of the transmitting party or device, while non-repudiation prevents a sender from falsely denying having sent a message. Message Authentication Codes (MACs) and Asymmetric Digital Signatures combine cryptographic hashing with secret keys to prove both data origin and transmission completeness.</p>
+      </article>
+    </section>
+
+    <section id="cryptographic-boundaries">
+      <h2>Realistic Boundaries: What Cryptography Cannot Solve</h2>
+      <p>A critical lesson in cybersecurity engineering is that <strong>cryptography is not a total solution to system security</strong>. Cryptography is an essential building block, but strong mathematical algorithms do not guarantee a secure system in practice.</p>
+
+      <p>Adversaries rarely attempt to break the underlying mathematics of modern ciphers; instead, they target vulnerabilities outside the cryptographic perimeter:</p>
+
+      <ul>
+        <li><strong>Endpoint Compromise:</strong> If an endpoint device (such as a server, workstation, or mobile phone) is infected with malware or compromised by remote code execution, attackers can steal plaintext data before encryption or capture private keys directly from memory.</li>
+        <li><strong>Implementation Bugs and Memory Safety:</strong> Mathematically sound algorithms can be subverted by defective software code. Historical vulnerabilities—such as the Heartbleed flaw in OpenSSL or buffer overflow errors in C libraries—leaked cryptographic keys and unencrypted credentials without breaking any cryptographic mathematics.</li>
+        <li><strong>Side-Channel and Physical Weaknesses:</strong> Hardware components executing cryptographic operations can unintentionally leak information through power consumption spikes, electromagnetic emanations, acoustic emissions, or cache access timing differences.</li>
+        <li><strong>Human Factors and Social Engineering:</strong> Weak passwords, misconfigured access controls, phishing attacks, and insider threats allow attackers to obtain legitimate credentials, bypassing cryptographic protections entirely.</li>
+        <li><strong>Denial of Service (DoS):</strong> An attacker who cannot decrypt an encrypted network connection can still jam physical radio frequencies or sever communication cables, completely disrupting system availability.</li>
+      </ul>
+
+      <p>For these reasons, information security requires defense-in-depth: combining mathematically validated cryptography with secure software design, hardened hardware roots of trust, strict identity access policies, and continuous auditing.</p>
+    </section>
+
+    <section id="authoritative-standards">
+      <h2>Authoritative Cryptographic Standards</h2>
+      <p>Engineers do not invent their own cryptographic algorithms; doing so almost invariably introduces critical vulnerabilities. Modern secure development requires adhering to standards developed through open international competitions and rigorous peer review.</p>
+      
+      <p>The <a href="https://csrc.nist.gov/" rel="external">NIST Computer Security Resource Center (CSRC)</a> provides definitive federal publications, cryptographic standards (such as FIPS 140-3 for cryptographic module validation), and ongoing updates on post-quantum cryptography migrations. For broader federal cybersecurity frameworks and measurement standards, visit the <a href="https://www.nist.gov/" rel="external">National Institute of Standards and Technology (NIST)</a> homepage.</p>
+    </section>
+  </main>
+
+  <footer>
+    <hr>
+    <p><small>&copy; 2026 SIGNAL / CIPHER. Educational Engineering Portfolio.</small></p>
+    <p><small>Disclaimer: The materials presented on this website are structured exclusively for academic and foundational engineering education.</small></p>
+  </footer>
+
+</body>
+</html>
+

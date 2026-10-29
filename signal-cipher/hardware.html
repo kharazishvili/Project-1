@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hardware Foundations — SIGNAL / CIPHER</title>
+</head>
+<body>
+
+  <header>
+    <p><strong>SIGNAL / CIPHER</strong></p>
+    <p>An educational inquiry into how continuous physical voltages become discrete digital states, and how mathematical cryptography protects the systems that compute them.</p>
+    <nav aria-label="Main Navigation">
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="hardware.html">Hardware Foundations</a></li>
+        <li><a href="cryptography.html">Cryptography &amp; Security</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Hardware Foundations of Digital Information</h1>
+
+    <nav aria-label="Page Table of Contents">
+      <h2>Table of Contents</h2>
+      <ul>
+        <li><a href="#voltage-and-binary">Voltage Levels and Logical Binary States</a></li>
+        <li><a href="#binary-representation">Binary Digits: The Atomic Units of Information</a></li>
+        <li><a href="#logic-gates">Logic Gates and Circuit Synthesis</a></li>
+        <li><a href="#processing-cycle">How Electronic Hardware Processes Information</a></li>
+        <li><a href="#hardware-security">The Intersection of Hardware Architecture and System Security</a></li>
+      </ul>
+    </nav>
+
+    <section id="voltage-and-binary">
+      <h2>Voltage Levels and Logical Binary States</h2>
+      <p>At the fundamental physical level, digital electronics do not natively operate on abstract mathematical numbers. Instead, circuits operate entirely in the continuous physical world of electricity, where electric potential difference—measured in volts—governs the flow of electrons through semiconductor materials.</p>
+
+      <p>To perform predictable computation, electronic engineers establish deliberate design rules that divide continuous analog voltage measurements into discrete logical states: logical <strong>0</strong> (often called "Low") and logical <strong>1</strong> (often called "High").</p>
+
+      <article id="voltage-tolerances">
+        <h3>Design-Specific Voltage Ranges and Noise Margins</h3>
+        <p>A critical engineering principle to understand is that voltage levels are <em>not</em> universally identical across all digital hardware. There is no single universal voltage that corresponds to a binary one or zero. Rather, specific voltage ranges represent logical states strictly according to an individual circuit family's specifications and manufacturing design:</p>
+        
+        <ul>
+          <li><strong>5.0V Transistor-Transistor Logic (TTL):</strong> In classic 5V TTL systems, an input voltage between 0.0V and 0.8V is interpreted as a logical Low (0), whereas an input voltage between 2.0V and 5.0V is interpreted as a logical High (1). The region between 0.8V and 2.0V is an illegal or indeterminate state where circuit behavior is unpredictable.</li>
+          <li><strong>3.3V Low-Voltage CMOS:</strong> In many microcontrollers and interface standards, a logical Low is bounded between 0.0V and 0.8V, while a logical High is typically recognized between 2.0V and 3.3V.</li>
+          <li><strong>Modern Sub-1.8V Microprocessors:</strong> High-density integrated circuits, such as modern central processing units (CPUs) and graphics processing units (GPUs), routinely operate at supply voltages of 1.2V, 1.0V, or even lower (sub-volt logic). Operating at reduced voltage thresholds dramatically decreases dynamic power consumption and heat dissipation while enabling billions of transistors to switch states at gigahertz frequencies.</li>
+        </ul>
+
+        <p>By establishing distinct voltage ranges rather than strict single-point values, digital circuits achieve substantial <em>noise margins</em>. If minor thermal fluctuations, electromagnetic interference, or power supply ripple cause a 3.3V signal to momentarily drop to 3.0V, the receiving gate continues to interpret the signal cleanly as a logical 1, preserving data integrity across physical wires.</p>
+      </article>
+    </section>
+
+    <section id="binary-representation">
+      <h2>Binary Digits: The Atomic Units of Information</h2>
+      <p>A binary digit, contracted as a <strong>bit</strong>, is the most elemental unit of digital information, representing a choice between two mutually exclusive states: 0 or 1, false or true, off or on. By grouping individual bits into standardized sequences, digital hardware represents complex information structures:</p>
+
+      <ul>
+        <li><strong>Nibble:</strong> A group of 4 bits, capable of expressing 16 distinct combinations ($2^4$), often represented by a single hexadecimal digit (0 through F).</li>
+        <li><strong>Byte:</strong> A standardized group of 8 bits, capable of expressing 256 unique states ($2^8$). The byte serves as the fundamental addressable unit of memory across almost all modern computer architectures.</li>
+        <li><strong>Machine Word:</strong> The natural data width processed by a computer's central processor in a single operation, typically 32 bits ($2^{32}$ states) or 64 bits ($2^{64}$ states) in contemporary architectures.</li>
+      </ul>
+
+      <p>Through established encoding conventions, these binary arrangements represent numbers (using unsigned binary or two's complement notation for signed integers), text (using ASCII or UTF-8 Unicode mappings), and executable machine instructions that dictate processor behavior.</p>
+    </section>
+
+    <section id="logic-gates">
+      <h2>Logic Gates and Circuit Synthesis</h2>
+      <p>Logic gates are the physical realization of Boolean algebra. Built from interconnected transistors—primarily Metal-Oxide-Semiconductor Field-Effect Transistors (MOSFETs)—logic gates act as voltage-controlled switches that receive one or more input voltages and produce a determined output voltage.</p>
+
+      <article id="gate-types">
+        <h3>Fundamental Logic Gate Implementations</h3>
+        <p>Digital circuits are constructed from a set of basic logic gates:</p>
+        <ul>
+          <li><strong>NOT Gate (Inverter):</strong> Accepts a single binary input and inverts it. A High voltage input yields a Low output, and a Low input yields a High output.</li>
+          <li><strong>AND Gate:</strong> Produces a logical High output if and only if all of its inputs are simultaneously High.</li>
+          <li><strong>OR Gate:</strong> Produces a logical High output whenever at least one of its inputs is High.</li>
+          <li><strong>NAND Gate:</strong> Combines an AND operation followed immediately by a NOT operation. The output is Low only when all inputs are High. NAND is known as a <em>universal gate</em> because any other Boolean function (AND, OR, NOT, XOR) can be constructed exclusively using networks of NAND gates.</li>
+          <li><strong>NOR Gate:</strong> Combines an OR operation followed by an inverter. NOR is also a universal gate capable of complete digital circuit synthesis.</li>
+          <li><strong>XOR Gate (Exclusive OR):</strong> Produces a logical High output if and only if its two inputs differ (one High and one Low). The XOR gate is foundational to both binary arithmetic (half-adders and full-adders) and cryptography, where it facilitates bitwise cipher operations and parity generation.</li>
+        </ul>
+      </article>
+
+      <p>When combined into larger assemblies, these gates form two major categories of digital circuits: <strong>combinational circuits</strong> (such as arithmetic logic units and decoders, whose output depends strictly on current inputs) and <strong>sequential circuits</strong> (such as latches and flip-flops, which contain internal feedback paths that allow them to remember previous states and form computer memory).</p>
+    </section>
+
+    <section id="processing-cycle">
+      <h2>How Electronic Hardware Processes Information</h2>
+      <p>Electronic hardware does not process data all at once in an unstructured fashion; it operates as a tightly choreographed sequential machine governed by a system clock.</p>
+
+      <p>A crystal oscillator generates a continuous, periodic square wave that serves as the heartbeat of the system. On each clock edge (rising or falling voltage transition), flip-flops capture and stabilize data from combinational logic pathways, preventing race conditions and propagation errors. Modern computing architectures execute information through a cycle of fundamental stages:</p>
+
+      <ol>
+        <li><strong>Instruction Fetch:</strong> The processor retrieves an encoded binary instruction from the memory location indicated by the Program Counter register.</li>
+        <li><strong>Instruction Decode:</strong> The control unit interprets the binary opcode, configuring internal electrical routing and activating the necessary functional units.</li>
+        <li><strong>Operand Execution:</strong> The Arithmetic Logic Unit (ALU) performs mathematical operations (addition, subtraction) or logical tests (bitwise AND, OR, comparison) on data held in temporary internal storage locations called registers.</li>
+        <li><strong>Memory Access and Writeback:</strong> Results are either committed back to internal registers or routed over the system memory bus to random-access memory (RAM).</li>
+      </ol>
+    </section>
+
+    <section id="hardware-security">
+      <h2>The Intersection of Hardware Architecture and System Security</h2>
+      <p>In secure system design, hardware is not merely a passive conduit for software execution; it forms the definitive foundation upon which all security guarantees rest. If the underlying hardware is compromised or defectively architected, software-based access controls and cryptographic protections can be completely subverted.</p>
+
+      <article id="hardware-attack-vectors">
+        <h3>Hardware Vulnerabilities and Attack Vectors</h3>
+        <p>Security engineers must account for several physical and architectural threat models:</p>
+        <ul>
+          <li><strong>Physical and Side-Channel Attacks:</strong> Rather than attacking an algorithm mathematically, adversaries can measure real-world physical side effects of chip execution. Differential Power Analysis (DPA) inspects minuscule spikes in power consumption that occur when transistors flip states, while Electromagnetic Analysis (EMA) monitors radio frequency emissions from copper traces. Through statistical correlation, attackers can deduce secret cryptographic keys without physically breaking open the chip.</li>
+          <li><strong>Fault Injection and Glitching:</strong> By intentionally disrupting supply voltages, overclocking clock signals, or directing precise laser pulses at bare silicon dies, attackers can induce deliberate hardware bit-flips. These transient electrical faults can cause microprocessors to skip authorization routines or incorrectly evaluate branch instructions.</li>
+          <li><strong>Architectural Speculation Flaws:</strong> High-performance processors employ predictive branching and speculative caching to maximize execution throughput. If hardware fails to strictly isolate speculative operations from architectural access controls, unauthorized software can infer sensitive kernel memory through microarchitectural timing differences.</li>
+          <li><strong>Supply Chain and Hardware Trojans:</strong> Unauthorized modifications inserted into an integrated circuit design prior to fabrication can provide stealthy hardware-level backdoors that bypass all operating system security layers.</li>
+        </ul>
+      </article>
+
+      <article id="hardware-defense-mechanisms">
+        <h3>Hardware Roots of Trust</h3>
+        <p>To defend against these vectors, modern computer engineering incorporates dedicated security hardware:</p>
+        <ul>
+          <li><strong>Hardware Security Modules (HSMs) and Secure Elements:</strong> Dedicated, tamper-resistant silicon chips designed with physical shielding, active mesh sensors that zeroize keys upon physical breach, and dedicated crypto-coprocessors.</li>
+          <li><strong>Trusted Platform Modules (TPMs):</strong> Cryptographic microcontrollers integrated into motherboards to provide measured boot integrity, cryptographic key generation, and non-volatile platform attestation.</li>
+          <li><strong>Isolated Execution Environments:</strong> Silicon-enforced memory partitioning (such as ARM TrustZone or hardware-enforced memory protection keys) that segregates critical cryptographic routines into isolated execution zones inaccessible to the primary operating system.</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <hr>
+    <p><small>&copy; 2026 SIGNAL / CIPHER. Educational Engineering Portfolio.</small></p>
+    <p><small>Disclaimer: The materials presented on this website are structured exclusively for academic and foundational engineering education.</small></p>
+  </footer>
+
+</body>
+</html>
+
